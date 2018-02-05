@@ -1,0 +1,21 @@
+diff --git a/run_training.cpp b/run_training.cpp
+index 358efb1..7660a8e 100644
+--- a/run_training.cpp
++++ b/run_training.cpp
+@@ -17,14 +17,14 @@ int main( int argc, char ** argv )
+ 		printf( "usage: run_training <data_dir> [<technique> <haar_cascade>]\n"
+ 			"--Note: directory should be organized into subdirectories by username\n"
+ 			"--technique options: eigen (default), fisher, lbph\n"
+-			"--default face detector: etc/haarcascade_frontalface_default.xml\n" );
++			"--default face detector: /etc/pam-facial-auth/haarcascade_frontalface_default.xml\n" );
+ 
+ 		return -1;
+ 	}
+ 
+ 	std::string pathDir   = argv[1];
+ 	std::string technique = "eigen";
+-	std::string pathHaar  = "etc/haarcascade_frontalface_default.xml";
++	std::string pathHaar  = "/etc/pam-facial-auth/haarcascade_frontalface_default.xml";
+ 
+ 	if ( argc == 3 )
+ 	{

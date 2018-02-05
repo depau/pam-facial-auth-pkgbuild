@@ -12,9 +12,9 @@ conflicts=("${pkgname%-git}")
 replaces=()
 backup=("etc/pam.d/${pkgname%-git}")
 #install=
-source=("$pkgname::git+https://github.com/devinaconley/pam-facial-auth.git" 'fix-build.patch')
+source=("$pkgname::git+https://github.com/devinaconley/pam-facial-auth.git" 'fix-build.patch' 'default-algo-path.patch')
 noextract=()
-md5sums=('SKIP' 'de97e305432420c88a8965b1a7141b36')
+md5sums=('SKIP' 'de97e305432420c88a8965b1a7141b36' 'ab202f183c614b2c47e07fe3853b2417')
 
 pkgver() {
         cd "$pkgname"
@@ -25,6 +25,7 @@ prepare() {
         cd "$srcdir/$_distdir/$pkgname"
         mkdir -p build
         patch -Np1 < ../fix-build.patch
+        patch -Np1 < ../default-algo-path.patch
 }
 
 build() {
@@ -43,6 +44,9 @@ package() {
         install -Dm755 run_test $pkgdir/usr/bin/pam_facial_auth_run_test
         install -Dm755 run_training $pkgdir/usr/bin/pam_facial_auth_run_training
         install -Dm755 facialauth.so $pkgdir/usr/lib/security/facialauth.so
+
+        install -Dm644 ../etc/haarcascade_frontalface_alt.xml $pkgdir/etc/pam-facial-auth/haarcascade_frontalface_alt.xml
+        install -Dm644 ../etc/haarcascade_frontalface_default.xml $pkgdir/etc/pam-facial-auth/haarcascade_frontalface_default.xml
 
         install -Dm644 /dev/stdin "$pkgdir/etc/pam.d/${pkgname%-git}" <<END
 #-------pam_test config---------#
