@@ -1,0 +1,51 @@
+diff --git a/src/FaceRecWrapper.cpp b/src/FaceRecWrapper.cpp
+index a537fee..5a16c85 100644
+--- a/src/FaceRecWrapper.cpp
++++ b/src/FaceRecWrapper.cpp
+@@ -80,7 +80,7 @@ void FaceRecWrapper::Load( const std::string & path )
+ 	SetTechnique( model["technique"] );
+ 
+ 	LoadCascade( path + "-cascade.xml" );
+-	fr->load( path + "-facerec.xml" );
++	fr->read( path + "-facerec.xml" );
+ }
+ 
+ void FaceRecWrapper::SetLabelNames( const std::vector<std::string> & names )
+@@ -100,20 +100,20 @@ bool FaceRecWrapper::SetTechnique( const std::string & t )
+ {
+ 	if ( t == "eigen" )
+ 	{
+-		fr = cv::face::createEigenFaceRecognizer( 10 );
++		fr = cv::face::EigenFaceRecognizer::create( 10 );
+ 	}
+ 	else if ( t == "fisher" )
+ 	{
+-		fr = cv::face::createFisherFaceRecognizer();
++		fr = cv::face::FisherFaceRecognizer::create();
+ 	}
+ 	else if ( t == "lbph" )
+ 	{
+-		fr = cv::face::createLBPHFaceRecognizer();
++		fr = cv::face::LBPHFaceRecognizer::create();
+ 	}
+ 	else
+ 	{
+ 		printf( "Invalid technique: %s, defaulting to eigenfaces.\n", technique.c_str() );
+-		fr        = cv::face::createEigenFaceRecognizer( 10 );
++		fr        = cv::face::EigenFaceRecognizer::create( 10 );
+ 		technique = "eigen";
+ 		return false;
+ 	}
+diff --git a/src/FacialAuth.cpp b/src/FacialAuth.cpp
+index 9c149e7..4ef3fc2 100644
+--- a/src/FacialAuth.cpp
++++ b/src/FacialAuth.cpp
+@@ -133,7 +133,7 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t * pamh, int flags, int argc, co
+ 		printf( "Predicted: %d, %s (%f)\n",
+ 			prediction, frw.GetLabelName( prediction ).c_str(), confidence );
+ 
+-		if ( confidence < threshold && frw.GetLabelName( prediction ) == username )
++		if ( confidence > threshold && frw.GetLabelName( prediction ) == username )
+ 		{
+ 			return PAM_SUCCESS;
+ 		}
